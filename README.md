@@ -36,4 +36,32 @@ npm i pg
 ```javascript
 npm i dotenv
 ```
+## 12-5 Create our first User using POST
+create user DB
 
+```SQL
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(150) UNIQUE NOT NULL,
+        age INT,
+        phone VARCHAR(15),
+        address TEXT,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+    )
+```
+
+## 12-6 Getting All Users & single user using params
+
+```SQL
+`INSERT INTO users(name, email) VALUES($1, $2) RETURNING *`, [name, email]
+`SELECT * FROM users WHERE id = $1`, [req.params.id]
+
+```
+
+
+```SQL
+`DELETE FROM users WHERE id = $1`, [req.params.id]
+
+```

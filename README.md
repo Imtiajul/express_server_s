@@ -65,3 +65,26 @@ create user DB
 `DELETE FROM users WHERE id = $1`, [req.params.id]
 
 ```
+
+
+## 12-9 Not Found Route & Middleware
+
+- not found 
+```typescript
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+    path: req.path
+  })
+});
+```
+- middleware 
+
+```typescript
+const logger = app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}\n`);
+  // to proceed the next part
+  next();
+})
+```

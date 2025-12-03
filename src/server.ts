@@ -17,9 +17,9 @@ const createDB = async () => {
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     age INT,
-    phone VARCHAR(15) UNIQUE,
+    phone VARCHAR(15),
     address TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
     )`);
 
@@ -44,15 +44,126 @@ app.get('/', (req: Request, res:Response) => {
   res.send('Hello Next Lever Coders!')
 })
 
-app.post('/', (req: Request, res:Response) => {
-  console.log(req.body);
-
-  res.status(201).json({
-    sucess: true,
-    message: "Post data sended successfully"
-  })
+// users crud - insert user
+app.post('/users', async (req: Request, res:Response) => {
+  const {name, email} = req.body;
+  try {
+   const result = await pool.query(`INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *`, [name, email]);
+    res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      data: result.rows[0],
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Message could not be sent",
+    })
+  }
 })
+//users get crud
+app.get('/users', async (req: Request, res:Response) => {
 
+  try {
+   const result = await pool.query(`SELECT * FROM users`);
+  //  console.log(result);
+    res.status(200).json({
+      success: true,
+      message: "User data fetch successfully",
+      data: result.rows,
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Data could not be fetched",
+      details: error,
+    })
+  }
+})
+//users get by id
+app.get('/users/:id', async (req: Request, res: Response) => {
+  // console.log(req.params.id);
+  // res.send('Api is working coooly');
+
+  try {
+    const result = await pool.query(`SELECT * FROM users WHERE id = $1`, [req.params.id]);
+    
+    if(result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        data: null,
+      })} else {
+        res.status(200).json({
+          success: true,
+          message: "User data fetch successfully",
+          data: result.rows[0],
+        })
+      }
+  } catch (error:any) {
+    res.status(500).json({
+      success: false,
+      message: "Data could not be fetched",
+      details: error.message,
+    })
+    
+  }
+})
+// users update by id
+app.put('/users/:id', async (req: Request, res: Response) => {
+  const {name, email} = req.body;
+
+  try {
+    const result = await pool.query(`UPDATE users SET name=$1, email=$2 WHERE id = $3 RETURNING *`, [name, email, req.params.id]);
+    
+    if(result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        data: null,
+      })} else {
+        res.status(200).json({
+          success: true,
+          message: "User data updated successfully",
+          data: result.rows[0],
+        })
+      }
+  } catch (error:any) {
+    res.status(500).json({
+      success: false,
+      message: "User could not be updated",
+      details: error.message,
+    })
+    
+  }
+})
+// users delete by id
+app.delete('/users/:id', async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(`DELETE FROM users WHERE id = $1 RETURNING *`, [req.params.id]);
+    console.log(result);
+    
+    if(result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+        data: null,
+      })} else {
+        res.status(200).json({
+          success: true,
+          message: "User data deleted successfully",
+          data: null,
+        })
+      }
+  } catch (error:any) {
+    res.status(500).json({
+      success: false,
+      message: "User could not be deleted",
+      details: error.message,
+    })
+    
+  }
+})
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })

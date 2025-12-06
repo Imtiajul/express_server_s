@@ -88,3 +88,21 @@ const logger = app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 })
 ```
+
+------------------------------------------------------------------------------------
+
+# [Modular Pettern, Authentication, Authorizaton](https://github.com/Apollo-Level2-Web-Dev/express_server/tree/modular-demo)
+
+## 13-2 Why Configuration Is Important?
+We will move env & DB file to config
+
+env, db -> config
+
+route.ts - middleware -> controller.ts -> service.ts 
+
+route.ts    - work as router. Here we use moduler pattern
+middleware  - we can modify, filter, update req, res data with middleware
+controller  - handle request, response
+service     - business logic
+
+## 13-2 Why Configuration Is Important?

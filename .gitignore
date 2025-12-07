@@ -1,3 +1,5 @@
 node_modules
 .env*
 Node Modular Pattern - Authentication - Authorization
+dist
+.vercel

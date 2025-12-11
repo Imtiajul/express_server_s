@@ -119,3 +119,39 @@ route.ts    - work as router. Here we use moduler pattern
 middleware  - we can modify, filter, update req, res data with middleware
 controller  - handle request, response
 service     - business logic
+
+
+## 13.5-1 Build & Deploy Your Express & Typescript APP
+
+free deply platform - vercel, render, railway, cycle.io
+
+1. install vercel package globally
+```javascript
+npm i -g vercel
+```
+
+2. add a jsno file with this script
+```javascript
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/server.js"
+    }
+  ]
+}
+```
+
+3. Run the following cmd
+```javascript
+vercel --prod
+```
+
+4. Upload .env file in vercel environment
